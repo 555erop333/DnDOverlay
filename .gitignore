@@ -25,8 +25,9 @@ x86/
 *.rsuser
 *.csproj.user
 
-## Music
+## Music & Audio
 Music/
+Audio/
 
 ## Misc
 *.zip
