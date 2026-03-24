@@ -1,0 +1,176 @@
+<Window x:Class="DnDOverlay.SoundsMiniAppWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:DnDOverlay"
+        Title="Звуки"
+        Width="220"
+        Height="92"
+        MinWidth="100"
+        MinHeight="53"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStartupLocation="CenterOwner"
+        PreviewMouseLeftButtonDown="Window_OnPreviewMouseLeftButtonDown">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="VolumeSliderStyle" TargetType="Slider">
+                <Setter Property="Width" Value="16" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Slider">
+                            <Grid Margin="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <Border x:Name="TrackFill"
+                                        Grid.Row="1"
+                                        Width="4"
+                                        HorizontalAlignment="Center"
+                                        CornerRadius="2"
+                                        Background="{DynamicResource ControlButtonForegroundBrush}"
+                                        Opacity="0.35" />
+
+                                <Track x:Name="PART_Track"
+                                       Grid.RowSpan="3"
+                                       Orientation="{TemplateBinding Orientation}"
+                                       Maximum="{TemplateBinding Maximum}"
+                                       Minimum="{TemplateBinding Minimum}"
+                                       Value="{TemplateBinding Value}"
+                                       IsDirectionReversed="True">
+                                    <Track.DecreaseRepeatButton>
+                                        <RepeatButton Command="Slider.DecreaseLarge"
+                                                      Background="Transparent"
+                                                      BorderThickness="0"
+                                                      Focusable="False" />
+                                    </Track.DecreaseRepeatButton>
+                                    <Track.IncreaseRepeatButton>
+                                        <RepeatButton Command="Slider.IncreaseLarge"
+                                                      Background="Transparent"
+                                                      BorderThickness="0"
+                                                      Focusable="False" />
+                                    </Track.IncreaseRepeatButton>
+                                    <Track.Thumb>
+                                        <Thumb x:Name="VolumeThumb"
+                                               Width="14"
+                                               Height="8"
+                                               Focusable="False"
+                                               Background="{DynamicResource ControlButtonForegroundBrush}">
+                                            <Thumb.Template>
+                                                <ControlTemplate TargetType="Thumb">
+                                                    <Border Width="{TemplateBinding Width}"
+                                                            Height="{TemplateBinding Height}"
+                                                            CornerRadius="4"
+                                                            Background="{TemplateBinding Background}" />
+                                                </ControlTemplate>
+                                            </Thumb.Template>
+                                        </Thumb>
+                                    </Track.Thumb>
+                                </Track>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="TrackFill"
+                                            Property="Background"
+                                            Value="{DynamicResource ControlButtonHoverBrush}" />
+                                    <Setter TargetName="VolumeThumb"
+                                            Property="Background"
+                                            Value="{DynamicResource ControlButtonHoverBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="TrackFill" Property="Opacity" Value="0.18" />
+                                    <Setter TargetName="VolumeThumb" Property="Opacity" Value="0.45" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Border CornerRadius="2"
+            BorderBrush="{DynamicResource AppWindowBorderBrush}"
+            BorderThickness="1"
+            Background="{DynamicResource AppWindowBackgroundBrush}">
+        <Grid Margin="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <ScrollViewer Grid.Column="0"
+                          Margin="0 0 2 0"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled"
+                          Background="Transparent">
+                <ItemsControl x:Name="SoundsList">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"
+                                       Margin="0" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.Resources>
+                        <DataTemplate DataType="{x:Type local:SoundsMiniAppWindow+SoundItem}">
+                            <Button Content="{Binding DisplayName}"
+                                    Width="64"
+                                    Height="22"
+                                    Margin="2"
+                                    Padding="0"
+                                    FontSize="9"
+                                    FontWeight="SemiBold"
+                                    Tag="{Binding}"
+                                    Background="{DynamicResource ControlButtonBackgroundBrush}"
+                                    Foreground="{DynamicResource ControlButtonForegroundBrush}"
+                                    BorderBrush="{DynamicResource ControlButtonBorderBrush}"
+                                    Click="SoundButton_OnClick" />
+                        </DataTemplate>
+                    </ItemsControl.Resources>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <Grid Grid.Column="1"
+                  VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <ToggleButton x:Name="MiniAppTopmostToggle"
+                              Grid.Row="0"
+                              Style="{StaticResource MiniAppTopmostToggleStyle}"
+                              Click="MiniAppTopmostToggle_OnClick"
+                              Margin="0 0 0 4" />
+                <Button Grid.Row="1"
+                        Style="{StaticResource MiniAppCloseButtonStyle}"
+                        ToolTip="Закрыть"
+                        Click="Close_OnClick"
+                        Margin="0 0 0 8" />
+                <Slider Grid.Row="2"
+                        Orientation="Vertical"
+                        Height="80"
+                        Minimum="0"
+                        Maximum="1"
+                        SmallChange="0.05"
+                        LargeChange="0.1"
+                        Value="{Binding Volume, RelativeSource={RelativeSource AncestorType={x:Type local:SoundsMiniAppWindow}}, Mode=TwoWay}"
+                        ToolTip="Громкость"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Margin="0 12 0 0"
+                        Style="{StaticResource VolumeSliderStyle}" />
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

@@ -1,0 +1,406 @@
+<Window x:Class="DnDOverlay.PlayerManagementWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Игроки"
+        Width="600"
+        Height="450"
+        MinWidth="400"
+        MinHeight="300"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+            <ControlTemplate x:Key="MiniAppComboBoxToggleButton" TargetType="ToggleButton">
+                <Border x:Name="ToggleBorder"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{DynamicResource PanelBorderBrush}"
+                        BorderThickness="0">
+                    <Grid>
+                        <Path x:Name="Arrow"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              Data="M 0 0 L 4 4 L 8 0 Z"
+                              Fill="{DynamicResource ControlButtonForegroundBrush}"
+                              Width="8"
+                              Height="4" />
+                    </Grid>
+                </Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter TargetName="ToggleBorder" Property="Background" Value="{DynamicResource ControlButtonHoverBrush}" />
+                    </Trigger>
+                    <Trigger Property="IsPressed" Value="True">
+                        <Setter TargetName="ToggleBorder" Property="Background" Value="{DynamicResource ControlButtonPressedBrush}" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter TargetName="Arrow" Property="Fill" Value="{DynamicResource ControlButtonBorderBrush}" />
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+
+            <Style x:Key="MiniAppComboBoxStyle" TargetType="ComboBox">
+                <Setter Property="Background" Value="{DynamicResource InputBackgroundBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource InputForegroundBrush}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource PanelBorderBrush}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Padding" Value="2" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ComboBox">
+                            <Grid>
+                                <Border x:Name="Border"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="20" />
+                                    </Grid.ColumnDefinitions>
+                                    <ContentPresenter Margin="4,0,0,0"
+                                                      VerticalAlignment="Center"
+                                                      Content="{TemplateBinding SelectionBoxItem}"
+                                                      IsHitTestVisible="False" />
+                                    <ToggleButton x:Name="ToggleButton"
+                                                  Grid.Column="1"
+                                                  Template="{StaticResource MiniAppComboBoxToggleButton}"
+                                                  Background="{DynamicResource ControlButtonBackgroundBrush}"
+                                                  Focusable="False"
+                                                  IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                                  ClickMode="Press" />
+                                </Grid>
+                                <Popup x:Name="Popup"
+                                       Placement="Bottom"
+                                       AllowsTransparency="True"
+                                       Focusable="False"
+                                       PopupAnimation="Slide"
+                                       IsOpen="{TemplateBinding IsDropDownOpen}"
+                                       PlacementTarget="{Binding ElementName=ToggleButton}">
+                                    <Border Background="{DynamicResource SurfaceBackgroundBrush}"
+                                            BorderBrush="{DynamicResource PanelBorderBrush}"
+                                            BorderThickness="1"
+                                            MaxHeight="200">
+                                        <ScrollViewer>
+                                            <ItemsPresenter />
+                                        </ScrollViewer>
+                                    </Border>
+                                </Popup>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="Border" Property="Opacity" Value="0.6" />
+                                </Trigger>
+                                <Trigger Property="IsDropDownOpen" Value="True">
+                                    <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource ControlButtonPressedBrush}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Border CornerRadius="2"
+            BorderBrush="{DynamicResource AppWindowBorderBrush}"
+            BorderThickness="1"
+            Background="{DynamicResource AppWindowBackgroundBrush}">
+        <Grid Margin="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0"
+                    Background="{DynamicResource HeaderBackgroundBrush}"
+                    Padding="2"
+                    MouseLeftButtonDown="Header_OnMouseLeftButtonDown">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Right"
+                                Orientation="Horizontal"
+                                Margin="0 0 2 0">
+                        <ToggleButton x:Name="MiniAppTopmostToggle"
+                                      Style="{StaticResource MiniAppTopmostToggleStyle}"
+                                      Click="MiniAppTopmostToggle_OnClick" />
+
+                        <Button Style="{StaticResource MiniAppCloseButtonStyle}"
+                                ToolTip="Закрыть"
+                                Click="Close_OnClick" />
+                    </StackPanel>
+
+                    <TextBlock Text="Игроки"
+                               Foreground="{DynamicResource HeaderTextBrush}"
+                               FontSize="10"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center" />
+                </DockPanel>
+            </Border>
+
+            <Grid Grid.Row="1" Margin="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0"
+                        Background="{DynamicResource PanelBackgroundBrush}"
+                        BorderBrush="{DynamicResource PanelBorderBrush}"
+                        BorderThickness="1"
+                        Padding="4"
+                        Margin="0 0 2 0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0">
+                            <TextBlock Text="Добавить игрока"
+                                       Foreground="{DynamicResource SurfaceForegroundBrush}"
+                                       FontSize="9"
+                                       Margin="0 0 0 2" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox x:Name="AddPlayerTextBox"
+                                         Height="15"
+                                         Width="140"
+                                         FontSize="9"
+                                         Padding="2"
+                                         Background="{DynamicResource InputBackgroundBrush}"
+                                         Foreground="{DynamicResource InputForegroundBrush}"
+                                         BorderBrush="{DynamicResource PanelBorderBrush}"
+                                         BorderThickness="1"
+                                         Margin="0 0 4 2" />
+                                <Button Content="Доб"
+                                        Height="16"
+                                        Width="32"
+                                        Padding="1 0"
+                                        FontSize="9"
+                                        Background="{DynamicResource ControlButtonBackgroundBrush}"
+                                        Foreground="{DynamicResource ControlButtonForegroundBrush}"
+                                        BorderBrush="{DynamicResource ControlButtonBorderBrush}"
+                                        Click="AddPlayer_OnClick" />
+                            </StackPanel>
+                        </StackPanel>
+
+                        <Separator Grid.Row="1" Margin="0 4" />
+
+                        <StackPanel Grid.Row="2">
+                            <TextBlock Text="Выбранный игрок"
+                                       Foreground="{DynamicResource SurfaceForegroundBrush}"
+                                       FontSize="9"
+                                       Margin="0 0 0 2" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox x:Name="RenamePlayerTextBox"
+                                         Height="17"
+                                         Width="140"
+                                         FontSize="9"
+                                         Padding="2"
+                                         Background="{DynamicResource InputBackgroundBrush}"
+                                         Foreground="{DynamicResource InputForegroundBrush}"
+                                         BorderBrush="{DynamicResource PanelBorderBrush}"
+                                         BorderThickness="1"
+                                         Margin="0 0 4 2"
+                                         IsEnabled="{Binding HasSelectedPlayer}" />
+                                <Button Content="+"
+                                        Height="16"
+                                        Width="20"
+                                        Padding="1 0"
+                                        FontSize="9"
+                                        Background="{DynamicResource ControlButtonBackgroundBrush}"
+                                        Foreground="{DynamicResource ControlButtonForegroundBrush}"
+                                        BorderBrush="{DynamicResource ControlButtonBorderBrush}"
+                                        IsEnabled="{Binding HasSelectedPlayer}"
+                                        Click="RenamePlayer_OnClick" />
+                                <Button Content="✕"
+                                        Height="16"
+                                        Width="20"
+                                        Margin="2 0 0 0"
+                                        FontSize="9"
+                                        ToolTip="Удалить игрока"
+                                        Background="{DynamicResource ControlButtonBackgroundBrush}"
+                                        Foreground="{DynamicResource ControlButtonForegroundBrush}"
+                                        BorderBrush="{DynamicResource ControlButtonBorderBrush}"
+                                        IsEnabled="{Binding HasSelectedPlayer}"
+                                        Click="RemovePlayer_OnClick" />
+                            </StackPanel>
+                        </StackPanel>
+
+                        <Separator Grid.Row="3" Margin="0 2" />
+
+                        <ListBox x:Name="PlayersList"
+                                 Grid.Row="4"
+                                 ItemsSource="{Binding PlayerNames}"
+                                 Background="{DynamicResource SurfaceBackgroundBrush}"
+                                 BorderBrush="{DynamicResource PanelBorderBrush}"
+                                 BorderThickness="1"
+                                 FontSize="9"
+                                 Foreground="{DynamicResource SurfaceForegroundBrush}"
+                                 SelectionChanged="PlayersList_OnSelectionChanged" />
+                    </Grid>
+                </Border>
+
+                <Border Grid.Column="1"
+                        Background="{DynamicResource SurfaceBackgroundBrush}"
+                        BorderBrush="{DynamicResource PanelBorderBrush}"
+                        BorderThickness="1"
+                        Padding="4">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="{Binding SelectedPlayerLabel}"
+                                   Foreground="{DynamicResource SurfaceForegroundBrush}"
+                                   FontSize="9" />
+
+                        <DataGrid x:Name="ModifiersGrid"
+                                  Grid.Row="1"
+                                  ItemsSource="{Binding SkillModifiers}"
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  CanUserResizeRows="False"
+                                  CanUserResizeColumns="False"
+                                  CanUserSortColumns="False"
+                                  HeadersVisibility="Column"
+                                  RowHeight="24"
+                                  FontSize="9"
+                                  Background="{DynamicResource SurfaceBackgroundBrush}"
+                                  Foreground="{DynamicResource SurfaceForegroundBrush}"
+                                  BorderBrush="{DynamicResource PanelBorderBrush}"
+                                  BorderThickness="1"
+                                  Margin="0 2 0 2"
+                                  GridLinesVisibility="Horizontal"
+                                  HorizontalGridLinesBrush="{DynamicResource PanelBorderBrush}"
+                                  VerticalGridLinesBrush="{DynamicResource PanelBorderBrush}"
+                                  IsEnabled="{Binding HasSelectedPlayer}">
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="FontSize" Value="9" />
+                                    <Setter Property="Foreground" Value="{DynamicResource SurfaceForegroundBrush}" />
+                                    <Setter Property="Background" Value="{DynamicResource PanelBackgroundBrush}" />
+                                    <Setter Property="BorderBrush" Value="{DynamicResource PanelBorderBrush}" />
+                                    <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                </Style>
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="Foreground" Value="{DynamicResource SurfaceForegroundBrush}" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource ControlButtonHoverBrush}" />
+                                            <Setter Property="Foreground" Value="{DynamicResource ControlButtonForegroundBrush}" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="BorderBrush" Value="Transparent" />
+                                    <Setter Property="Padding" Value="4 0" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="Transparent" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.Resources>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Навык"
+                                                    Binding="{Binding SkillName}"
+                                                    IsReadOnly="True"
+                                                    Width="*" />
+                                <DataGridTemplateColumn Width="36" Header="">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="🗑"
+                                                    Width="24"
+                                                    Height="18"
+                                                    Padding="0"
+                                                    ToolTip="Удалить навык"
+                                                    Tag="{Binding SkillName}"
+                                                    Click="RemoveSkill_OnClick" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Мод."
+                                                        Width="48">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Modifier, StringFormat=+0;-0;0}"
+                                                       HorizontalAlignment="Center"
+                                                       Foreground="{DynamicResource SurfaceForegroundBrush}" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                    <DataGridTemplateColumn.CellEditingTemplate>
+                                        <DataTemplate>
+                                            <TextBox Text="{Binding Modifier, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
+                                                     HorizontalContentAlignment="Center"
+                                                     FontSize="9"
+                                                     Background="{DynamicResource InputBackgroundBrush}"
+                                                     Foreground="{DynamicResource InputForegroundBrush}"
+                                                     BorderBrush="{DynamicResource PanelBorderBrush}"
+                                                     BorderThickness="1"
+                                                     Padding="2"
+                                                     PreviewTextInput="ModifierTextBox_OnPreviewTextInput"
+                                                     TextChanged="ModifierTextBox_OnTextChanged"
+                                                     DataObject.Pasting="ModifierTextBox_OnPasting" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellEditingTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <TextBlock Grid.Row="2"
+                                   Text="Выберите игрока, чтобы редактировать модификаторы навыков."
+                                   Foreground="{DynamicResource SurfaceForegroundBrush}"
+                                   FontSize="8"
+                                   Visibility="{Binding HasSelectedPlayer, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=False}" />
+
+                        <Border Grid.Row="3"
+                                Margin="0 4 0 0"
+                                Background="{DynamicResource PanelBackgroundBrush}"
+                                BorderBrush="{DynamicResource PanelBorderBrush}"
+                                BorderThickness="1"
+                                Padding="4">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="Навыки"
+                                           Foreground="{DynamicResource SurfaceForegroundBrush}"
+                                           FontSize="9"
+                                           Margin="0 0 0 4" />
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox x:Name="AddSkillTextBox"
+                                             Width="100"
+                                             Height="18"
+                                             FontSize="9"
+                                             Padding="2"
+                                             Background="{DynamicResource InputBackgroundBrush}"
+                                             Foreground="{DynamicResource InputForegroundBrush}"
+                                             BorderBrush="{DynamicResource PanelBorderBrush}"
+                                             BorderThickness="1"
+                                             Margin="0 0 4 0"
+                                             ToolTip="Введите название навыка" />
+                                    <Button Content="Добавить"
+                                            Width="70"
+                                            Height="18"
+                                            FontSize="9"
+                                            Click="AddSkill_OnClick" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

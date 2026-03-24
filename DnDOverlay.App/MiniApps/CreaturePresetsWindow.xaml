@@ -1,0 +1,335 @@
+<Window x:Class="DnDOverlay.CreaturePresetsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Пресеты существ"
+        Width="350"
+        Height="400"
+        MinWidth="300"
+        MinHeight="300"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="MiniAppSpinnerButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="{DynamicResource ControlButtonBackgroundBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource ControlButtonForegroundBrush}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource ControlButtonBorderBrush}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="FontSize" Value="7" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="SpinnerBorder"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="SpinnerBorder" Property="Background" Value="{DynamicResource ControlButtonHoverBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="SpinnerBorder" Property="Background" Value="{DynamicResource ControlButtonPressedBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="SpinnerBorder" Property="Opacity" Value="0.5" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Border CornerRadius="2"
+            BorderBrush="{DynamicResource AppWindowBorderBrush}"
+            BorderThickness="1"
+            Background="{DynamicResource AppWindowBackgroundBrush}">
+        <Grid Margin="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Заголовок -->
+            <Border Grid.Row="0"
+                    Background="{DynamicResource HeaderBackgroundBrush}"
+                    Padding="2"
+                    MouseLeftButtonDown="Header_OnMouseLeftButtonDown">
+                <DockPanel>
+                    <TextBlock Text="Пресеты существ"
+                               Foreground="{DynamicResource HeaderTextBrush}"
+                               FontSize="10"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center" />
+
+                    <Button DockPanel.Dock="Right"
+                            Style="{StaticResource MiniAppCloseButtonStyle}"
+                            ToolTip="Закрыть"
+                            Click="Close_OnClick" />
+                </DockPanel>
+            </Border>
+
+            <!-- Панель добавления пресета -->
+            <Border Grid.Row="1"
+                    Background="{DynamicResource PanelBackgroundBrush}"
+                    BorderBrush="{DynamicResource PanelBorderBrush}"
+                    BorderThickness="1"
+                    Padding="4"
+                    Margin="2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Имя существа -->
+                    <StackPanel Grid.Column="0" Margin="0,0,4,0">
+                        <TextBlock Text="Имя" Foreground="{DynamicResource SurfaceForegroundBrush}" FontSize="8" />
+                        <TextBox x:Name="PresetNameInput"
+                                 Height="20"
+                                 Background="{DynamicResource InputBackgroundBrush}"
+                                 Foreground="{DynamicResource InputForegroundBrush}"
+                                 BorderBrush="{DynamicResource PanelBorderBrush}"
+                                 BorderThickness="1"
+                                 Padding="2"
+                                 FontSize="9"
+                                 VerticalContentAlignment="Center" />
+                    </StackPanel>
+
+                    <!-- Модификатор инициативы -->
+                    <StackPanel Grid.Column="1" Margin="0,0,4,0">
+                        <TextBlock Text="Мод." Foreground="{DynamicResource SurfaceForegroundBrush}" FontSize="8" />
+                        <Grid>
+                            <Border Background="{DynamicResource InputBackgroundBrush}"
+                                    BorderBrush="{DynamicResource PanelBorderBrush}"
+                                    BorderThickness="1"
+                                    Width="50"
+                                    Height="20">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="PresetInitModInput"
+                                             Grid.Column="0"
+                                             Text="0"
+                                             Background="Transparent"
+                                             Foreground="{DynamicResource InputForegroundBrush}"
+                                             BorderThickness="0"
+                                             Padding="2"
+                                             FontSize="9"
+                                             TextAlignment="Center"
+                                             VerticalContentAlignment="Center"
+                                             PreviewTextInput="NumberValidationTextBox" />
+                                    <StackPanel Grid.Column="1" Width="16">
+                                        <Button x:Name="PresetInitModUp"
+                                                Content="▲"
+                                                Height="10"
+                                                Style="{StaticResource MiniAppSpinnerButtonStyle}"
+                                                Click="PresetInitModUp_Click" />
+                                        <Button x:Name="PresetInitModDown"
+                                                Content="▼"
+                                                Height="10"
+                                                Style="{StaticResource MiniAppSpinnerButtonStyle}"
+                                                Click="PresetInitModDown_Click" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+
+                    <!-- Количество -->
+                    <StackPanel Grid.Column="2" Margin="0,0,4,0">
+                        <TextBlock Text="Кол-во" Foreground="{DynamicResource SurfaceForegroundBrush}" FontSize="8" />
+                        <Grid>
+                            <Border Background="{DynamicResource InputBackgroundBrush}"
+                                    BorderBrush="{DynamicResource PanelBorderBrush}"
+                                    BorderThickness="1"
+                                    Width="50"
+                                    Height="20">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="CountInput"
+                                             Grid.Column="0"
+                                             Text="1"
+                                             Background="Transparent"
+                                             Foreground="{DynamicResource InputForegroundBrush}"
+                                             BorderThickness="0"
+                                             Padding="2"
+                                             FontSize="9"
+                                             TextAlignment="Center"
+                                             VerticalContentAlignment="Center"
+                                             PreviewTextInput="NumberValidationTextBox" />
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+
+                    <!-- ХП -->
+                    <StackPanel Grid.Column="3" Margin="0,0,4,0">
+                        <TextBlock Text="ХП" Foreground="{DynamicResource SurfaceForegroundBrush}" FontSize="8" />
+                        <TextBox x:Name="PresetHpInput"
+                                 Width="50"
+                                 Height="20"
+                                 Background="{DynamicResource InputBackgroundBrush}"
+                                 Foreground="{DynamicResource InputForegroundBrush}"
+                                 BorderBrush="{DynamicResource PanelBorderBrush}"
+                                 BorderThickness="1"
+                                 Padding="2"
+                                 FontSize="9"
+                                 VerticalContentAlignment="Center"
+                                 PreviewTextInput="NumberValidationTextBox" />
+                    </StackPanel>
+
+                    <!-- КД -->
+                    <StackPanel Grid.Column="4" Margin="0,0,4,0">
+                        <TextBlock Text="КД" Foreground="{DynamicResource SurfaceForegroundBrush}" FontSize="8" />
+                        <TextBox x:Name="PresetCdInput"
+                                 Width="50"
+                                 Height="20"
+                                 Background="{DynamicResource InputBackgroundBrush}"
+                                 Foreground="{DynamicResource InputForegroundBrush}"
+                                 BorderBrush="{DynamicResource PanelBorderBrush}"
+                                 BorderThickness="1"
+                                 Padding="2"
+                                 FontSize="9"
+                                 VerticalContentAlignment="Center"
+                                 PreviewTextInput="NumberValidationTextBox" />
+                    </StackPanel>
+
+                    <!-- Кнопка добавления -->
+                    <Button Grid.Column="5"
+                            Content="+"
+                            Width="25"
+                            Height="20"
+                            VerticalAlignment="Bottom"
+                            FontSize="12"
+                            FontWeight="Bold"
+                            Style="{StaticResource MiniAppActionButtonStyle}"
+                            Click="AddPreset_OnClick" />
+                </Grid>
+            </Border>
+
+            <!-- Список пресетов -->
+            <ScrollViewer Grid.Row="2"
+                          Margin="2"
+                          Background="{DynamicResource SurfaceBackgroundBrush}"
+                          BorderBrush="{DynamicResource PanelBorderBrush}"
+                          BorderThickness="1"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <ItemsControl x:Name="PresetsList"
+                              Padding="2">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{DynamicResource PanelBackgroundBrush}"
+                                    BorderBrush="{DynamicResource PanelBorderBrush}"
+                                    BorderThickness="1"
+                                    Padding="4"
+                                    Margin="0,0,0,2"
+                                    CornerRadius="2">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Grid.Column="0"
+                                             Text="{Binding Name, UpdateSourceTrigger=LostFocus}"
+                                             Background="{DynamicResource InputBackgroundBrush}"
+                                             Foreground="{DynamicResource InputForegroundBrush}"
+                                             BorderBrush="{DynamicResource PanelBorderBrush}"
+                                             BorderThickness="1"
+                                             Padding="2"
+                                             FontSize="9"
+                                             MinWidth="120"
+                                             VerticalContentAlignment="Center"
+                                             MaxLength="60"
+                                             Margin="0,0,6,0" />
+
+                                    <TextBox Grid.Column="1"
+                                             Width="50"
+                                             Text="{Binding InitiativeModifier, UpdateSourceTrigger=LostFocus}"
+                                             Background="{DynamicResource InputBackgroundBrush}"
+                                             Foreground="{DynamicResource InputForegroundBrush}"
+                                             BorderBrush="{DynamicResource PanelBorderBrush}"
+                                             BorderThickness="1"
+                                             Padding="2"
+                                             FontSize="9"
+                                             VerticalContentAlignment="Center"
+                                             HorizontalContentAlignment="Center"
+                                             PreviewTextInput="NumberValidationTextBox"
+                                             LostFocus="PresetInitModTextBox_LostFocus"
+                                             Margin="0,0,6,0" />
+
+                                    <TextBox Grid.Column="2"
+                                             Width="60"
+                                             Text="{Binding Hp, UpdateSourceTrigger=LostFocus}"
+                                             Background="{DynamicResource InputBackgroundBrush}"
+                                             Foreground="{DynamicResource InputForegroundBrush}"
+                                             BorderBrush="{DynamicResource PanelBorderBrush}"
+                                             BorderThickness="1"
+                                             Padding="2"
+                                             FontSize="9"
+                                             VerticalContentAlignment="Center"
+                                             HorizontalContentAlignment="Center"
+                                             PreviewTextInput="PositiveNumberValidationTextBox"
+                                             LostFocus="PresetHpTextBox_LostFocus"
+                                             Margin="0,0,6,0" />
+
+                                    <TextBox Grid.Column="3"
+                                             Width="50"
+                                             Text="{Binding ArmorClass, UpdateSourceTrigger=LostFocus}"
+                                             Background="{DynamicResource InputBackgroundBrush}"
+                                             Foreground="{DynamicResource InputForegroundBrush}"
+                                             BorderBrush="{DynamicResource PanelBorderBrush}"
+                                             BorderThickness="1"
+                                             Padding="2"
+                                             FontSize="9"
+                                             VerticalContentAlignment="Center"
+                                             HorizontalContentAlignment="Center"
+                                             PreviewTextInput="PositiveNumberValidationTextBox"
+                                             LostFocus="PresetAcTextBox_LostFocus"
+                                             Margin="0,0,6,0" />
+
+                                    <Button Grid.Column="4"
+                                            Content="✕"
+                                            Width="18"
+                                            Height="18"
+                                            FontSize="10"
+                                            FontWeight="Bold"
+                                            Style="{StaticResource MiniAppActionButtonStyle}"
+                                            ToolTip="Удалить"
+                                            Tag="{Binding}"
+                                            Click="DeletePreset_OnClick" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+    </Border>
+</Window>

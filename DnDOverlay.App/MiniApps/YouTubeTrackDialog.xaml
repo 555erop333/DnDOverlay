@@ -1,0 +1,83 @@
+<Window x:Class="DnDOverlay.YouTubeTrackDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="YouTube трек"
+        Width="360"
+        Height="260"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        WindowStyle="ToolWindow"
+        ShowInTaskbar="False">
+  <Border Background="#FF1E2A3A" Padding="12">
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition x:Name="LinkRow" Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+
+      <TextBlock x:Name="LinkLabel"
+                 Grid.Row="0"
+                 Grid.Column="0"
+                 Margin="0 0 8 8"
+                 VerticalAlignment="Center"
+                 Foreground="White"
+                 Text="Ссылка:" />
+      <TextBox x:Name="LinkTextBox"
+               Grid.Row="0"
+               Grid.Column="1"
+               Margin="0 0 0 8"
+               Height="24"
+               MinWidth="220" />
+
+      <TextBlock Grid.Row="1"
+                 Grid.Column="0"
+                 Margin="0 0 8 8"
+                 VerticalAlignment="Center"
+                 Foreground="White"
+                 Text="Название:" />
+      <TextBox x:Name="TitleTextBox"
+               Grid.Row="1"
+               Grid.Column="1"
+               Margin="0 0 0 8"
+               Height="24"
+               MinWidth="220" />
+
+      <TextBlock Grid.Row="2"
+                 Grid.Column="0"
+                 Margin="0 0 8 0"
+                 VerticalAlignment="Top"
+                 Foreground="White"
+                 Text="Описание:" />
+      <TextBox x:Name="DescriptionTextBox"
+               Grid.Row="2"
+               Grid.Column="1"
+               Margin="0"
+               AcceptsReturn="True"
+               TextWrapping="Wrap"
+               VerticalScrollBarVisibility="Auto"
+               MinHeight="100" />
+
+      <StackPanel Grid.Row="3"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="2"
+                  Orientation="Horizontal"
+                  HorizontalAlignment="Right"
+                  Margin="0 12 0 0">
+        <Button Content="Отмена"
+                Width="80"
+                Margin="0 0 8 0"
+                Click="CancelButton_OnClick" />
+        <Button Content="OK"
+                Width="80"
+                IsDefault="True"
+                Click="OkButton_OnClick" />
+      </StackPanel>
+    </Grid>
+  </Border>
+</Window>

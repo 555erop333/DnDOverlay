@@ -1,0 +1,48 @@
+<Application x:Class="DnDOverlay.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Application.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Styles.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+
+      <Style TargetType="Window">
+        <Setter Property="Icon" Value="pack://application:,,,/MainIco.ico" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+        <Setter Property="TextOptions.TextRenderingMode" Value="ClearType" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+      </Style>
+
+      <SolidColorBrush x:Key="AppWindowBackgroundBrush" Color="#FF4FA9FF" />
+      <SolidColorBrush x:Key="AppWindowBorderBrush" Color="#FF1E6ACB" />
+      <SolidColorBrush x:Key="HeaderBackgroundBrush" Color="#66224F80" />
+      <SolidColorBrush x:Key="HeaderTextBrush" Color="#FFFFFFFF" />
+      <SolidColorBrush x:Key="ControlButtonBackgroundBrush" Color="#55FFFFFF" />
+      <SolidColorBrush x:Key="ControlButtonBorderBrush" Color="#33FFFFFF" />
+      <SolidColorBrush x:Key="ControlButtonForegroundBrush" Color="#FFFFFFFF" />
+      <SolidColorBrush x:Key="ControlButtonHoverBrush" Color="#77FFFFFF" />
+      <SolidColorBrush x:Key="ControlButtonPressedBrush" Color="#AAFFFFFF" />
+      <SolidColorBrush x:Key="SurfaceBackgroundBrush" Color="#11222222" />
+      <SolidColorBrush x:Key="SurfaceForegroundBrush" Color="#FFFFFFFF" />
+      <SolidColorBrush x:Key="PanelBackgroundBrush" Color="#1A000000" />
+      <SolidColorBrush x:Key="PanelBorderBrush" Color="#44FFFFFF" />
+      <SolidColorBrush x:Key="InputBackgroundBrush" Color="#22FFFFFF" />
+      <SolidColorBrush x:Key="InputForegroundBrush" Color="#FFFFFFFF" />
+      <SolidColorBrush x:Key="StatusGoodBackgroundBrush" Color="#FF198754" />
+      <SolidColorBrush x:Key="StatusGoodForegroundBrush" Color="#FFFFFFFF" />
+      <SolidColorBrush x:Key="StatusWarningBackgroundBrush" Color="#FFB78103" />
+      <SolidColorBrush x:Key="StatusWarningForegroundBrush" Color="#FF1E1E1E" />
+      <SolidColorBrush x:Key="StatusDangerBackgroundBrush" Color="#FFB42318" />
+      <SolidColorBrush x:Key="StatusDangerForegroundBrush" Color="#FFFFFFFF" />
+
+      <SolidColorBrush x:Key="AccentBrush" Color="#FF7C5BFF" />
+      <SolidColorBrush x:Key="AccentForegroundBrush" Color="#FFFFFFFF" />
+      <SolidColorBrush x:Key="AccentHoverBrush" Color="#FF957AFF" />
+      <SolidColorBrush x:Key="AccentPressedBrush" Color="#FF5A3EEB" />
+      <SolidColorBrush x:Key="AccentBorderBrush" Color="#804026A8" />
+      <SolidColorBrush x:Key="AccentSubtleBrush" Color="#407C5BFF" />
+    </ResourceDictionary>
+  </Application.Resources>
+</Application>

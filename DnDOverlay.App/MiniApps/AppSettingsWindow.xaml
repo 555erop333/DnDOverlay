@@ -1,0 +1,387 @@
+<Window x:Class="DnDOverlay.AppSettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Настройки"
+        Width="420"
+        Height="460"
+        MinWidth="360"
+        MinHeight="360"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent">
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Styles.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+      <ControlTemplate x:Key="MiniAppComboBoxToggleButton" TargetType="ToggleButton">
+        <Border x:Name="ToggleBorder"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{DynamicResource PanelBorderBrush}"
+                BorderThickness="0">
+          <Grid>
+            <Path x:Name="Arrow"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Data="M 0 0 L 4 4 L 8 0 Z"
+                  Fill="{DynamicResource ControlButtonForegroundBrush}"
+                  Stretch="Fill"
+                  Width="8"
+                  Height="4" />
+          </Grid>
+        </Border>
+        <ControlTemplate.Triggers>
+          <Trigger Property="IsMouseOver" Value="True">
+            <Setter TargetName="ToggleBorder" Property="Background" Value="{DynamicResource ControlButtonHoverBrush}" />
+          </Trigger>
+          <Trigger Property="IsPressed" Value="True">
+            <Setter TargetName="ToggleBorder" Property="Background" Value="{DynamicResource ControlButtonPressedBrush}" />
+          </Trigger>
+          <Trigger Property="IsEnabled" Value="False">
+            <Setter TargetName="Arrow" Property="Fill" Value="{DynamicResource ControlButtonBorderBrush}" />
+          </Trigger>
+        </ControlTemplate.Triggers>
+      </ControlTemplate>
+
+      <Style x:Key="MiniAppComboBoxItemStyle" TargetType="ComboBoxItem">
+        <Setter Property="Foreground" Value="{DynamicResource SurfaceForegroundBrush}" />
+        <Setter Property="Background" Value="{DynamicResource SurfaceBackgroundBrush}" />
+        <Setter Property="Padding" Value="4 2" />
+        <Setter Property="Template">
+          <Setter.Value>
+            <ControlTemplate TargetType="ComboBoxItem">
+              <Border x:Name="ItemBorder"
+                      Background="{TemplateBinding Background}"
+                      Padding="{TemplateBinding Padding}">
+                <ContentPresenter />
+              </Border>
+              <ControlTemplate.Triggers>
+                <Trigger Property="IsHighlighted" Value="True">
+                  <Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource ControlButtonHoverBrush}" />
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                  <Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource ControlButtonPressedBrush}" />
+                  <Setter Property="Foreground" Value="{DynamicResource ControlButtonForegroundBrush}" />
+                </Trigger>
+              </ControlTemplate.Triggers>
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+      </Style>
+
+      <Style x:Key="MiniAppComboBoxStyle" TargetType="ComboBox">
+        <Setter Property="Background" Value="{DynamicResource InputBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource InputForegroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource PanelBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="2" />
+        <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+          <Setter.Value>
+            <ControlTemplate TargetType="ComboBox">
+              <Grid>
+                <Border x:Name="Border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}" />
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="20" />
+                  </Grid.ColumnDefinitions>
+                  <ContentPresenter x:Name="ContentSite"
+                                    Margin="4 0 0 0"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Left"
+                                    Content="{TemplateBinding SelectionBoxItem}"
+                                    ContentTemplate="{TemplateBinding ItemTemplate}"
+                                    IsHitTestVisible="False" />
+                  <ToggleButton x:Name="ToggleButton"
+                                Grid.Column="1"
+                                Focusable="False"
+                                Template="{StaticResource MiniAppComboBoxToggleButton}"
+                                Background="{DynamicResource ControlButtonBackgroundBrush}"
+                                IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                ClickMode="Press" />
+                </Grid>
+                <Popup x:Name="Popup"
+                       Placement="Bottom"
+                       AllowsTransparency="True"
+                       Focusable="False"
+                       PopupAnimation="Slide"
+                       IsOpen="{TemplateBinding IsDropDownOpen}"
+                       PlacementTarget="{Binding ElementName=ToggleButton}">
+                  <Border x:Name="DropDownBorder"
+                          Background="{DynamicResource SurfaceBackgroundBrush}"
+                          BorderBrush="{DynamicResource PanelBorderBrush}"
+                          BorderThickness="1"
+                          MaxHeight="200">
+                    <ScrollViewer Margin="0"
+                                  SnapsToDevicePixels="True">
+                      <ItemsPresenter />
+                    </ScrollViewer>
+                  </Border>
+                </Popup>
+              </Grid>
+              <ControlTemplate.Triggers>
+                <Trigger Property="HasItems" Value="False">
+                  <Setter TargetName="DropDownBorder" Property="MinHeight" Value="20" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                  <Setter Property="Foreground" Value="{DynamicResource ControlButtonBorderBrush}" />
+                  <Setter TargetName="Border" Property="Opacity" Value="0.6" />
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                  <Setter TargetName="Border" Property="Background" Value="{DynamicResource ControlButtonHoverBrush}" />
+                </Trigger>
+                <Trigger Property="IsDropDownOpen" Value="True">
+                  <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource ControlButtonPressedBrush}" />
+                </Trigger>
+              </ControlTemplate.Triggers>
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+      </Style>
+    </ResourceDictionary>
+  </Window.Resources>
+
+  <Border CornerRadius="2"
+          BorderBrush="{DynamicResource AppWindowBorderBrush}"
+          BorderThickness="1"
+          Background="{DynamicResource AppWindowBackgroundBrush}">
+    <Grid Margin="2">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+
+      <Border Grid.Row="0"
+              Background="{DynamicResource HeaderBackgroundBrush}"
+              Padding="2"
+              MouseLeftButtonDown="Header_OnMouseLeftButtonDown">
+        <DockPanel>
+          <StackPanel DockPanel.Dock="Right"
+                      Orientation="Horizontal"
+                      Margin="0 0 2 0">
+            <ToggleButton x:Name="MiniAppTopmostToggle"
+                          Style="{StaticResource MiniAppTopmostToggleStyle}"
+                          ToolTip="Закрепить"
+                          Click="MiniAppTopmostToggle_OnClick" />
+            <Button Style="{StaticResource MiniAppCloseButtonStyle}"
+                    ToolTip="Закрыть"
+                    Click="CloseButton_OnClick" />
+          </StackPanel>
+
+          <TextBlock Text="Настройки"
+                     Foreground="{DynamicResource HeaderTextBrush}"
+                     FontSize="10"
+                     FontWeight="Bold"
+                     VerticalAlignment="Center" />
+        </DockPanel>
+      </Border>
+
+      <Grid Grid.Row="1"
+            Margin="6"
+            TextElement.Foreground="{DynamicResource SurfaceForegroundBrush}">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="*" />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0"
+                    Orientation="Vertical"
+                    Margin="0 0 0 12">
+          <TextBlock Text="Настройки мини-приложения"
+                     FontSize="16"
+                     FontWeight="Bold" />
+          <TextBlock Text="Выберите цвета, масштаб, язык интерфейса и ознакомьтесь с авторами."
+                     Margin="0 4 0 0"
+                     Opacity="0.75"
+                     TextWrapping="Wrap" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto">
+          <StackPanel Orientation="Vertical">
+            <Border Padding="12"
+                    Margin="0 0 0 12"
+                    Background="{DynamicResource PanelBackgroundBrush}"
+                    BorderBrush="{DynamicResource PanelBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="6">
+              <StackPanel>
+                <TextBlock Text="Цветовая схема"
+                           FontWeight="Bold" />
+                <TextBlock Text="Настройте основные цвета интерфейса."
+                           Margin="0 0 0 8"
+                           Opacity="0.75" />
+
+                <StackPanel Orientation="Horizontal" Margin="0 0 0 6">
+                  <TextBlock Text="Тема:" Width="120" VerticalAlignment="Center" />
+                  <ComboBox x:Name="ThemeComboBox"
+                            Width="200"
+                            DisplayMemberPath="DisplayName"
+                            Style="{StaticResource MiniAppComboBoxStyle}"
+                            ItemContainerStyle="{StaticResource MiniAppComboBoxItemStyle}"
+                            SelectionChanged="ThemeComboBox_OnSelectionChanged" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0 0 0 6">
+                  <TextBlock Text="Акцентный цвет:" Width="120" VerticalAlignment="Center" />
+                  <ComboBox x:Name="AccentComboBox" Width="200"
+                            Style="{StaticResource MiniAppComboBoxStyle}"
+                            ItemContainerStyle="{StaticResource MiniAppComboBoxItemStyle}"
+                            SelectionChanged="AccentComboBox_OnSelectionChanged">
+                    <ComboBox.ItemTemplate>
+                      <DataTemplate>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                          <Rectangle Width="14" Height="14" RadiusX="3" RadiusY="3" Margin="0 0 6 0">
+                            <Rectangle.Fill>
+                              <SolidColorBrush Color="{Binding PrimaryColor}" />
+                            </Rectangle.Fill>
+                          </Rectangle>
+                          <TextBlock Text="{Binding DisplayName}" />
+                        </StackPanel>
+                      </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                  </ComboBox>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="Фон панели:" Width="120" VerticalAlignment="Center" />
+                  <ComboBox x:Name="BackgroundComboBox" Width="200"
+                            Style="{StaticResource MiniAppComboBoxStyle}"
+                            ItemContainerStyle="{StaticResource MiniAppComboBoxItemStyle}">
+                    <ComboBoxItem Content="Полупрозрачный" IsSelected="True" />
+                    <ComboBoxItem Content="Непрозрачный" />
+                    <ComboBoxItem Content="Стекло" />
+                  </ComboBox>
+                </StackPanel>
+              </StackPanel>
+            </Border>
+
+            <Border Padding="12"
+                    Margin="0 0 0 12"
+                    Background="{DynamicResource PanelBackgroundBrush}"
+                    BorderBrush="{DynamicResource PanelBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="6">
+              <StackPanel>
+                <TextBlock Text="Масштаб интерфейса"
+                           FontWeight="Bold" />
+                <TextBlock Text="Выберите один из трёх размеров интерфейса: стандартный, чуть больше или чуть меньше."
+                           Margin="0 0 0 8"
+                           Opacity="0.75"
+                           TextWrapping="Wrap" />
+
+                <StackPanel>
+                  <StackPanel Orientation="Horizontal"
+                              Margin="0 0 0 6"
+                              HorizontalAlignment="Left"
+                              x:Name="ScaleOptionsPanel">
+                    <RadioButton x:Name="ScaleCompactRadio"
+                                  Content="Компактный (-5%)"
+                                  Tag="0.95"
+                                  GroupName="UiScale"
+                                  Margin="0 0 12 0"
+                                  Checked="ScaleRadioButton_OnChecked" />
+                    <RadioButton x:Name="ScaleDefaultRadio"
+                                  Content="Стандартный"
+                                  Tag="1.0"
+                                  GroupName="UiScale"
+                                  Margin="0 0 12 0"
+                                  IsChecked="True"
+                                  Checked="ScaleRadioButton_OnChecked" />
+                    <RadioButton x:Name="ScaleLargeRadio"
+                                  Content="Крупный (+5%)"
+                                  Tag="1.05"
+                                  GroupName="UiScale"
+                                  Checked="ScaleRadioButton_OnChecked" />
+                  </StackPanel>
+                  <TextBlock x:Name="ScaleValueTextBlock"
+                             FontWeight="Bold"
+                             Text="100%" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+
+            <Border Padding="12"
+                    Background="{DynamicResource ControlButtonBackgroundBrush}"
+                    BorderBrush="{DynamicResource ControlButtonBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="6">
+              <StackPanel>
+                <TextBlock Text="Язык"
+                           FontWeight="Bold" />
+                <TextBlock Text="Выберите язык интерфейса (в будущем будет добавлено больше переводов)."
+                           Margin="0 0 0 8"
+                           Opacity="0.75"
+                           TextWrapping="Wrap" />
+                <ComboBox x:Name="LanguageComboBox" Width="220"
+                          Style="{StaticResource MiniAppComboBoxStyle}"
+                          ItemContainerStyle="{StaticResource MiniAppComboBoxItemStyle}">
+                  <ComboBoxItem Content="Русский" IsSelected="True" />
+
+                </ComboBox>
+              </StackPanel>
+            </Border>
+
+            <Border Padding="12"
+                    Margin="12 12 0 0"
+                    Background="{DynamicResource PanelBackgroundBrush}"
+                    BorderBrush="{DynamicResource PanelBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="6">
+              <StackPanel>
+                <TextBlock Text="Авторы"
+                           FontWeight="Bold" />
+                <TextBlock Text="Мини-приложение создано ДнД энтузиастом."
+                           Margin="0 0 0 8"
+                           Opacity="0.75" />
+                <StackPanel>
+                  <TextBlock Text="Lead Developer — Egor G" />
+                  <TextBlock Text="UI/UX — Egor G" />
+                  <TextBlock Text="QA &amp; Docs — Egor G" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0 12 0 0">
+          <Button Width="120"
+                  Height="30"
+                  Margin="0 0 8 0"
+                  Content="Сбросить"
+                  Background="{DynamicResource ControlButtonBackgroundBrush}"
+                  Foreground="{DynamicResource ControlButtonForegroundBrush}"
+                  BorderBrush="{DynamicResource ControlButtonBorderBrush}"
+                  Click="ResetButton_OnClick" />
+          <Button Width="140"
+                  Height="30"
+                  Margin="0 0 8 0"
+                  Content="Сохранить"
+                  IsDefault="True"
+                  Background="{DynamicResource ControlButtonBackgroundBrush}"
+                  Foreground="{DynamicResource ControlButtonForegroundBrush}"
+                  BorderBrush="{DynamicResource ControlButtonBorderBrush}"
+                  Click="SaveButton_OnClick" />
+          <Button Width="100"
+                  Height="30"
+                  Content="Закрыть"
+                  IsCancel="True"
+                  Background="{DynamicResource ControlButtonBackgroundBrush}"
+                  Foreground="{DynamicResource ControlButtonForegroundBrush}"
+                  BorderBrush="{DynamicResource ControlButtonBorderBrush}"
+                  Click="CloseButton_OnClick" />
+        </StackPanel>
+      </Grid>
+    </Grid>
+  </Border>
+</Window>

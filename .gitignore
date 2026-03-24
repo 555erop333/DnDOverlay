@@ -1,0 +1,35 @@
+## .NET
+bin/
+obj/
+publish/
+
+## User-specific
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+
+## NuGet
+**/packages/*
+*.nupkg
+**/[Pp]ackages/build/
+
+## Visual Studio
+.vs/
+*.rsuser
+*.csproj.user
+
+## Music
+Music/
+
+## Misc
+*.zip
+*.log
+thumbs.db
+desktop.ini

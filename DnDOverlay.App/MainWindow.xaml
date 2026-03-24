@@ -1,0 +1,131 @@
+<Window x:Class="DnDOverlay.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="DnD Overlay"
+        Width="320"
+        Height="24"
+        MinWidth="240"
+        MinHeight="24"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStartupLocation="CenterScreen"
+        Icon="pack://application:,,,/MainIco.ico">
+    <Window.Resources>
+        <!-- Local resources if any -->
+    </Window.Resources>
+
+    <Border CornerRadius="2"
+            BorderBrush="{DynamicResource AppWindowBorderBrush}"
+            BorderThickness="1"
+            Background="{DynamicResource AppWindowBackgroundBrush}">
+        <StackPanel Orientation="Horizontal" Margin="2">
+            <Button Content="Ини"
+                    Style="{StaticResource MainMenuButtonStyle}"
+                    Margin="0"
+                    ToolTip="Инициатива"
+                    Click="OpenInitiative_OnClick" />
+
+            <Button Content="Ста"
+                    Style="{StaticResource MainMenuButtonStyle}"
+                    ToolTip="Статы"
+                    Click="OpenStats_OnClick" />
+
+            <Button Content="Бло"
+                    Style="{StaticResource MainMenuButtonStyle}"
+                    ToolTip="Блокнот"
+                    Click="OpenNotebook_OnClick" />
+
+            <Button Content="Куб"
+                    Style="{StaticResource MainMenuButtonStyle}"
+                    ToolTip="Кубы"
+                    Click="OpenDice_OnClick" />
+
+            <Button Content="Зву"
+                    Style="{StaticResource MainMenuButtonStyle}"
+                    ToolTip="Звуки"
+                    Click="OpenSounds_OnClick" />
+
+            <Button Content="Муз"
+                    Style="{StaticResource MainMenuButtonStyle}"
+                    ToolTip="Музыка"
+                    Click="OpenMusic_OnClick" />
+
+            <Button Margin="4,0,0,0"
+                    ToolTip="Настройки"
+                    Style="{StaticResource MainMenuButtonStyle}"
+                    Width="26"
+                    Click="OpenSettings_OnClick">
+                <TextBlock Text=""
+                           FontSize="13"
+                           FontFamily="Segoe MDL2 Assets"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+            </Button>
+
+            <Rectangle Width="1" Height="18" Fill="{DynamicResource ControlButtonBorderBrush}" Margin="4,0,2,0" />
+
+            <ToggleButton x:Name="TopmostToggle"
+                          Width="20"
+                          Height="18"
+                          Margin="0"
+                          Padding="0"
+                          ToolTip="Закрепить поверх всех окон"
+                          Click="TopmostToggle_OnClick">
+                <ToggleButton.Template>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="ButtonBorder"
+                                Background="{DynamicResource ControlButtonBackgroundBrush}"
+                                BorderBrush="{DynamicResource ControlButtonBorderBrush}"
+                                BorderThickness="1">
+                            <TextBlock Text="📌"
+                                       FontSize="10"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource ControlButtonForegroundBrush}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="{DynamicResource ControlButtonPressedBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="{DynamicResource ControlButtonHoverBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </ToggleButton.Template>
+            </ToggleButton>
+
+            <Button Width="20"
+                    Height="18"
+                    Margin="2,0,0,0"
+                    Padding="0"
+                    ToolTip="Закрыть"
+                    Click="CloseButton_OnClick">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{DynamicResource ControlButtonBackgroundBrush}"
+                                BorderBrush="{DynamicResource ControlButtonBorderBrush}"
+                                BorderThickness="1">
+                            <TextBlock Text="✕"
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource ControlButtonForegroundBrush}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="{DynamicResource ControlButtonHoverBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </StackPanel>
+    </Border>
+</Window>
